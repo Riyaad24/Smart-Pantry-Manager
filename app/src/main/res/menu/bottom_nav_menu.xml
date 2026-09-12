@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_pantry"
-        android:icon="@android:drawable/ic_menu_agenda"
-        android:title="@string/nav_pantry" />
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:title="Pantry" />
     <item
-        android:id="@+id/nav_recipes"
-        android:icon="@android:drawable/ic_menu_search"
-        android:title="@string/nav_recipes" />
+        android:id="@+id/nav_suggested"
+        android:icon="@android:drawable/ic_menu_slideshow"
+        android:title="Suggested" />
     <item
         android:id="@+id/nav_settings"
         android:icon="@android:drawable/ic_menu_preferences"
-        android:title="@string/nav_settings" />
+        android:title="Settings" />
 </menu>

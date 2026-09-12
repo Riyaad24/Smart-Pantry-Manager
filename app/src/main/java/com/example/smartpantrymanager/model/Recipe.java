@@ -1,24 +1,27 @@
 package com.example.smartpantrymanager.model;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import java.util.Arrays;
 import java.util.List;
 
 /** A recipe made up of a name, method steps, and its list of required ingredients. */
+@Entity(tableName = "recipes")
 public class Recipe {
 
-    private long id;
-    private String name;
-    private String steps;
-    private List<RecipeIngredient> ingredients;
+    @PrimaryKey(autoGenerate = true)
+    public int id;
+    public String name;
+    public String ingredientsCsv; // store as "egg, bread, milk"
+    public String steps;
 
-    public Recipe(long id, String name, String steps, List<RecipeIngredient> ingredients) {
-        this.id = id;
+    public Recipe(String name, String ingredientsCsv, String steps) {
         this.name = name;
+        this.ingredientsCsv = ingredientsCsv;
         this.steps = steps;
-        this.ingredients = ingredients;
     }
 
-    public long getId() { return id; }
-    public String getName() { return name; }
-    public String getSteps() { return steps; }
-    public List<RecipeIngredient> getIngredients() { return ingredients; }
+    public List<String> getIngredients() {
+        return Arrays.asList(ingredientsCsv.split(","));
+    }
 }
