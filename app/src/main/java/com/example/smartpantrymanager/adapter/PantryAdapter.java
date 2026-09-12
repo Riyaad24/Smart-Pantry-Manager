@@ -1,57 +1,68 @@
 package com.example.smartpantrymanager.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.smartpantrymanager.AddEditActivity;
 import com.example.smartpantrymanager.R;
+import com.example.smartpantrymanager.db.AppDatabase;
 import com.example.smartpantrymanager.model.PantryItem;
 
 import java.util.List;
 
-/** Binds the pantry list (Section 2.2) to a RecyclerView, one card per ingredient. */
 public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.ViewHolder> {
 
-    public interface Listener {
-        void onItemClick(PantryItem item);
-        void onDeleteClick(PantryItem item);
-    }
+    private Context context;
+    private List<PantryItem> items;
+    private AppDatabase db;
 
-    private final List<PantryItem> items;
-    private final Listener listener;
-
-    public PantryAdapter(List<PantryItem> items, Listener listener) {
+    public PantryAdapter(Context context, List<PantryItem> items, AppDatabase db) {
+        this.context = context;
         this.items = items;
-        this.listener = listener;
+        this.db = db;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_pantry, parent, false);
-        return new ViewHolder(v);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_pantry, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         PantryItem item = items.get(position);
-        holder.name.setText(item.getName());
-        holder.quantity.setText(formatQuantity(item.getQuantity()) + " " + item.getUnit());
+        holder.txtName.setText(item.getName());
+        holder.txtQty.setText(item.getQuantity() + " " + item.getUnit());
 
-        if (item.getExpiryDate() != null && !item.getExpiryDate().isEmpty()) {
-            holder.expiry.setVisibility(View.VISIBLE);
-            holder.expiry.setText("Expires: " + item.getExpiryDate());
-        } else {
-            holder.expiry.setVisibility(View.GONE);
-        }
+        holder.btnEdit.setOnClickListener(v -> {
+            Intent i = new Intent(context, AddEditActivity.class);
+            i.putExtra("pantry_id", item.getId());
+            i.putExtra("pantry_name", item.getName());
+            i.putExtra("pantry_qty", item.getQuantity());
+            i.putExtra("pantry_unit", item.getUnit());
+            i.putExtra("pantry_expiry", item.getExpiryDate());
+            context.startActivity(i);
+        });
 
-        holder.itemView.setOnClickListener(v -> listener.onItemClick(item));
-        holder.deleteButton.setOnClickListener(v -> listener.onDeleteClick(item));
+        holder.btnDelete.setOnClickListener(v -> {
+            db.pantryDao().delete(item);
+            int currentPos = holder.getBindingAdapterPosition();
+            if (currentPos != RecyclerView.NO_POSITION) {
+                items.remove(currentPos);
+                notifyItemRemoved(currentPos);
+                notifyItemRangeChanged(currentPos, items.size());
+                Toast.makeText(context, "Deleted " + item.getName(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -59,21 +70,16 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.ViewHolder
         return items.size();
     }
 
-    private String formatQuantity(double q) {
-        if (q == Math.floor(q)) return String.valueOf((long) q);
-        return String.valueOf(q);
-    }
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView txtName, txtQty;
+        ImageButton btnEdit, btnDelete;
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView name, quantity, expiry;
-        ImageButton deleteButton;
-
-        ViewHolder(@NonNull View itemView) {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            name = itemView.findViewById(R.id.textIngredientName);
-            quantity = itemView.findViewById(R.id.textIngredientQuantity);
-            expiry = itemView.findViewById(R.id.textIngredientExpiry);
-            deleteButton = itemView.findViewById(R.id.buttonDelete);
+            txtName = itemView.findViewById(R.id.txtPantryName);
+            txtQty = itemView.findViewById(R.id.txtPantryQty);
+            btnEdit = itemView.findViewById(R.id.btnEdit);
+            btnDelete = itemView.findViewById(R.id.btnDelete);
         }
     }
 }
