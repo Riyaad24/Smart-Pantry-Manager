@@ -1,46 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/bg_deep_slate">
 
-    <TextView
-        android:id="@+id/txtTitle"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:text="You Can Make Right Now"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:background="@color/bg_deep_slate"
+        app:elevation="0dp">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerSuggested"
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbarSuggested"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="Recipe Suggestions"
+            app:titleCentered="true"
+            app:titleTextAppearance="@style/AppTitleMedium" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/txtTitle"
-        app:layout_constraintBottom_toTopOf="@id/bottomNav"/>
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <TextView
-        android:id="@+id/txtNoMatch"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="24dp"
-        android:gravity="center"
-        android:text="No recipes match your pantry yet - add more ingredients"
-        android:visibility="gone"
-        android:textSize="16sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="16dp"
+            android:text="Ready to cook"
+            android:textAppearance="@style/AppTitleMedium"
+            android:textColor="@color/accent_indigo"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerSuggested"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:paddingHorizontal="8dp"
+            android:clipToPadding="false"
+            app:layout_constraintTop_toBottomOf="@id/txtTitle"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:listitem="@layout/item_recipe" />
+
+        <LinearLayout
+            android:id="@+id/txtNoMatch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="32dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@android:drawable/ic_menu_report_image"
+                app:tint="@color/text_low_contrast" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="No recipes match"
+                android:textAppearance="@style/AppTitleMedium"
+                android:textColor="@color/text_medium_contrast" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:text="Add more ingredients to your pantry to see what you can make!"
+                android:textAppearance="@style/AppBodyLarge"
+                android:textColor="@color/text_low_contrast" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         app:menu="@menu/bottom_nav_menu"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        style="@style/AppBottomNavStyle" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

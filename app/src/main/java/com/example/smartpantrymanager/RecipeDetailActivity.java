@@ -3,6 +3,8 @@ package com.example.smartpantrymanager;
 import android.os.Bundle;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.example.smartpantrymanager.db.AppDatabase;
 import com.example.smartpantrymanager.model.Recipe;
 
@@ -16,6 +18,15 @@ public class RecipeDetailActivity extends AppCompatActivity {
         int recipeId = getIntent().getIntExtra("recipe_id", -1);
         AppDatabase db = AppDatabase.getInstance(this);
         Recipe recipe = db.recipeDao().getById(recipeId);
+
+        // Setup Toolbar
+        Toolbar toolbar = findViewById(R.id.toolbarDetail);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setNavigationOnClickListener(v -> onBackPressed());
+            getSupportActionBar().setTitle(""); // Name is shown in large text below
+        }
 
         TextView txtName = findViewById(R.id.txtRecipeName);
         TextView txtIngredients = findViewById(R.id.txtIngredients);

@@ -1,7 +1,30 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.SmartPantryManager" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <style name="Base.Theme.SmartPantryManager" parent="Theme.Material3.Dark.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/accent_indigo</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/accent_indigo_variant</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/text_medium_contrast</item>
+        <item name="colorOnSecondary">@color/bg_deep_slate</item>
+
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">@color/bg_deep_slate</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- Background and Surface -->
+        <item name="android:windowBackground">@color/bg_deep_slate</item>
+        <item name="colorSurface">@color/surface_soft_charcoal</item>
+        <item name="colorOnSurface">@color/text_high_contrast</item>
+        <item name="colorSurfaceVariant">@color/surface_soft_charcoal</item>
+        <item name="colorOnSurfaceVariant">@color/text_medium_contrast</item>
+
+        <!-- Components styling -->
+        <item name="materialCardViewStyle">@style/AppCardStyle</item>
+        <item name="textInputStyle">@style/AppTextInputStyle</item>
+        <item name="bottomNavigationStyle">@style/AppBottomNavStyle</item>
     </style>
 </resources>

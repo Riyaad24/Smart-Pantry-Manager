@@ -1,44 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:background="@color/bg_deep_slate">
 
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="Settings" android:textSize="20sp" android:textStyle="bold"
-        android:id="@+id/titleSettings"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switchExpiryAlert"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Alert for expiring-soon items"
-        app:layout_constraintTop_toBottomOf="@id/titleSettings"/>
+        android:background="@color/bg_deep_slate"
+        app:elevation="0dp">
 
-    <TextView android:id="@+id/txtUnits"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="Preferred Units"
-        app:layout_constraintTop_toBottomOf="@id/switchExpiryAlert"/>
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbarSettings"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="Settings"
+            app:titleCentered="true"
+            app:titleTextAppearance="@style/AppTitleMedium" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <RadioGroup android:id="@+id/radioUnits"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/txtUnits">
-        <RadioButton android:id="@+id/radioMetric" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Metric (kg, ml)" android:checked="true"/>
-        <RadioButton android:id="@+id/radioImperial" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Imperial (pcs, cups)"/>
-    </RadioGroup>
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:padding="24dp">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardExpiry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switchExpiryAlert"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Expiry Alerts"
+                    android:textAppearance="@style/AppTitleMedium"
+                    app:thumbTint="@color/accent_indigo"
+                    app:trackTint="@color/text_low_contrast" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Get notified before ingredients expire"
+                    android:textAppearance="@style/AppBodyLarge"
+                    android:textColor="@color/text_low_contrast" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/txtUnitsTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:text="Measurement Units"
+            android:textAppearance="@style/AppTitleMedium"
+            android:textColor="@color/accent_indigo"
+            app:layout_constraintTop_toBottomOf="@id/cardExpiry" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintTop_toBottomOf="@id/txtUnitsTitle">
+
+            <RadioGroup
+                android:id="@+id/radioUnits"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp">
+
+                <RadioButton
+                    android:id="@+id/radioMetric"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:text="Metric System (kg, ml, g)"
+                    android:buttonTint="@color/accent_indigo"
+                    android:textColor="@color/text_high_contrast" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/bg_deep_slate" />
+
+                <RadioButton
+                    android:id="@+id/radioImperial"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:text="Imperial System (lb, oz, pcs)"
+                    android:buttonTint="@color/accent_indigo"
+                    android:textColor="@color/text_high_contrast" />
+            </RadioGroup>
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         app:menu="@menu/bottom_nav_menu"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        style="@style/AppBottomNavStyle" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
