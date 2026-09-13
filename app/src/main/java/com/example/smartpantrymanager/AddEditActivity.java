@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -37,6 +39,14 @@ public class AddEditActivity extends AppCompatActivity {
         btnSave = findViewById(R.id.btnSave);
 
         db = AppDatabase.getInstance(this);
+
+        // Setup Toolbar
+        Toolbar toolbar = findViewById(R.id.toolbarAddEdit);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        }
 
         // CHECK: Are we editing? Data comes via Intent from PantryList
         Intent intent = getIntent();
