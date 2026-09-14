@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Modern Dark Palette -->
+    <!-- Modern Dark Premium Palette -->
     <color name="bg_deep_slate">#0F172A</color>
     <color name="surface_soft_charcoal">#1E293B</color>
+    <color name="surface_card_premium">#1E293B</color>
+
+    <!-- Indigo Brand Accents & Interactive States -->
     <color name="accent_indigo">#6366F1</color>
     <color name="accent_indigo_variant">#4F46E5</color>
+    <color name="accent_indigo_dim">#2E3757</color>
+    <color name="accent_indigo_ripple">#334F46E5</color>
 
+    <!-- Borders and Separators -->
+    <color name="stroke_subtle">#334155</color>
+    <color name="stroke_focused">#818CF8</color>
+
+    <!-- Content Contrast Hierarchy -->
     <color name="text_high_contrast">#F8FAFC</color>
     <color name="text_medium_contrast">#94A3B8</color>
     <color name="text_low_contrast">#64748B</color>
@@ -13,8 +23,13 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
 
-    <!-- Functional Colors -->
+    <!-- Functional Accent Badges & Low Opacity Background Tints -->
     <color name="error_red">#EF4444</color>
+    <color name="error_red_bg">#2A1F2D</color>
+
     <color name="success_green">#10B981</color>
+    <color name="success_green_bg">#142E2A</color>
+
     <color name="warning_amber">#F59E0B</color>
+    <color name="warning_amber_bg">#2C2A20</color>
 </resources>

@@ -22,7 +22,7 @@
         <item name="colorSurfaceVariant">@color/surface_soft_charcoal</item>
         <item name="colorOnSurfaceVariant">@color/text_medium_contrast</item>
 
-        <!-- Typography -->
+        <!-- Typography overrides -->
         <item name="textAppearanceHeadlineLarge">@style/AppHeadlineLarge</item>
         <item name="textAppearanceTitleMedium">@style/AppTitleMedium</item>
         <item name="textAppearanceBodyLarge">@style/AppBodyLarge</item>
@@ -35,39 +35,63 @@
 
     <style name="Theme.SmartPantryManager" parent="Base.Theme.SmartPantryManager" />
 
-    <!-- Typography Styles -->
+    <!-- Premium Typography System -->
     <style name="AppHeadlineLarge">
         <item name="android:textColor">@color/text_high_contrast</item>
-        <item name="android:textSize">32sp</item>
+        <item name="android:textSize">30sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">-0.02</item>
+    </style>
+
+    <style name="AppHeadlineMedium">
+        <item name="android:textColor">@color/text_high_contrast</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">-0.01</item>
     </style>
 
     <style name="AppTitleMedium">
         <item name="android:textColor">@color/text_high_contrast</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">0.01</item>
+    </style>
+
+    <style name="AppTitleSmall">
+        <item name="android:textColor">@color/text_medium_contrast</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">0.02</item>
     </style>
 
     <style name="AppBodyLarge">
         <item name="android:textColor">@color/text_medium_contrast</item>
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:letterSpacing">0.01</item>
     </style>
 
-    <!-- Component Styles -->
+    <style name="AppBodySmall">
+        <item name="android:textColor">@color/text_low_contrast</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
+    <!-- Component Styles with custom tokens -->
     <style name="AppCardStyle" parent="Widget.Material3.CardView.Elevated">
         <item name="cardBackgroundColor">@color/surface_soft_charcoal</item>
-        <item name="cardCornerRadius">16dp</item>
-        <item name="cardElevation">2dp</item>
-        <item name="strokeColor">@color/accent_indigo</item>
-        <item name="strokeWidth">0.5dp</item>
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeColor">@color/stroke_subtle</item>
+        <item name="strokeWidth">1dp</item>
     </style>
 
     <style name="AppTextInputStyle" parent="Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">@color/accent_indigo</item>
-        <item name="boxCornerRadiusTopStart">12dp</item>
-        <item name="boxCornerRadiusTopEnd">12dp</item>
-        <item name="boxCornerRadiusBottomStart">12dp</item>
-        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="boxCornerRadiusTopStart">8dp</item>
+        <item name="boxCornerRadiusTopEnd">8dp</item>
+        <item name="boxCornerRadiusBottomStart">8dp</item>
+        <item name="boxCornerRadiusBottomEnd">8dp</item>
         <item name="hintTextColor">@color/text_medium_contrast</item>
         <item name="android:textColorHint">@color/text_low_contrast</item>
     </style>
@@ -76,6 +100,27 @@
         <item name="backgroundTint">@color/surface_soft_charcoal</item>
         <item name="itemIconTint">@color/nav_item_tint</item>
         <item name="itemTextColor">@color/nav_item_tint</item>
-        <item name="itemRippleColor">@color/accent_indigo</item>
+        <item name="itemRippleColor">@color/accent_indigo_ripple</item>
+        <item name="elevation">8dp</item>
+    </style>
+
+    <!-- Premium Button Styles -->
+    <style name="AppButtonPrimary" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/accent_indigo</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">0.02</item>
+    </style>
+
+    <style name="AppButtonSecondary" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="strokeColor">@color/stroke_subtle</item>
+        <item name="android:textColor">@color/text_high_contrast</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">12dp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 </resources>
