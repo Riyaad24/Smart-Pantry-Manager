@@ -3,7 +3,6 @@ package com.example.smartpantrymanager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,6 +12,7 @@ import com.example.smartpantrymanager.adapter.RecipeAdapter;
 import com.example.smartpantrymanager.db.AppDatabase;
 import com.example.smartpantrymanager.model.PantryItem;
 import com.example.smartpantrymanager.model.Recipe;
+import com.example.smartpantrymanager.net.RecipeApiClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,24 +54,55 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
     private void loadSuggestedRecipes() {
         List<PantryItem> pantry = db.pantryDao().getAll();
         List<Recipe> allRecipes = db.recipeDao().getAll();
-        List<Recipe> suggested = getStrictMatchingRecipes(allRecipes, pantry);
+        
+        // Compute active local strict matches
+        final List<Recipe> suggestedList = new ArrayList<>(getStrictMatchingRecipes(allRecipes, pantry));
 
-        if (suggested.isEmpty()) {
-            txtNoMatch.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-        } else {
-            txtNoMatch.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-            RecipeAdapter adapter = new RecipeAdapter(this, suggested, recipe -> {
-                Intent intent = new Intent(this, RecipeDetailActivity.class);
-                intent.putExtra("recipe_id", recipe.id);
-                startActivity(intent);
-            });
-            recyclerView.setAdapter(adapter);
+        // Form aggregate structural query parameter keywords based on current pantry ingredients list
+        StringBuilder queryBuilder = new StringBuilder();
+        if (!pantry.isEmpty()) {
+            queryBuilder.append(pantry.get(0).getName());
         }
+
+        // Pull dynamic web suggestions asynchronously from the network API client layer layer cleanly
+        RecipeApiClient.fetchOnlineSuggestions(queryBuilder.toString(), new RecipeApiClient.ApiCallback() {
+            @Override
+            public void onResponse(List<Recipe> onlineSuggestions) {
+                runOnUiThread(() -> {
+                    // Blend local strict inventory selections with fresh live suggestions matching tokens
+                    if (onlineSuggestions != null) {
+                        for (Recipe r : onlineSuggestions) {
+                            boolean exists = false;
+                            for (Recipe local : suggestedList) {
+                                if (local.name.equalsIgnoreCase(r.name)) {
+                                    exists = true;
+                                    break;
+                                }
+                            }
+                            if (!exists) {
+                                suggestedList.add(r);
+                            }
+                        }
+                    }
+
+                    if (suggestedList.isEmpty()) {
+                        txtNoMatch.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
+                    } else {
+                        txtNoMatch.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                        RecipeAdapter adapter = new RecipeAdapter(SuggestedRecipesActivity.this, suggestedList, recipe -> {
+                            Intent intent = new Intent(SuggestedRecipesActivity.this, RecipeDetailActivity.class);
+                            intent.putExtra("recipe_id", recipe.id);
+                            startActivity(intent);
+                        });
+                        recyclerView.setAdapter(adapter);
+                    }
+                });
+            }
+        });
     }
 
-    // CORE LOGIC - EXPLAIN THIS IN VIDEO WITH CODE OPEN
     private List<Recipe> getStrictMatchingRecipes(List<Recipe> allRecipes, List<PantryItem> pantry) {
         List<Recipe> result = new ArrayList<>();
         for (Recipe recipe : allRecipes) {
@@ -96,7 +127,6 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
         return result;
     }
 
-    // Robust matching - handles tomato/tomatoes, case, spaces
     private String normalize(String s) {
         if (s == null) return "";
         s = s.toLowerCase().trim();
