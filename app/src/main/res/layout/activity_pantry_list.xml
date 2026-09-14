@@ -190,7 +190,7 @@
                 </LinearLayout>
             </HorizontalScrollView>
 
-            <!-- SECTION: FEATURED RECOMMENDATION HERO VIEW BLOCK -->
+            <!-- SECTION: FEATURED RECOMMENDATION HERO VIEW BLOCK (Powered by TheMealDB API) -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -213,14 +213,14 @@
                     android:orientation="vertical"
                     android:background="@color/surface_soft_charcoal">
 
-                    <!-- High Impact Large Food Silhouette Representation Container -->
-                    <TextView
+                    <!-- LIVE HIGH IMPACT FOOD IMAGE CONTAINER FROM API -->
+                    <ImageView
+                        android:id="@+id/imgFeaturedMeal"
                         android:layout_width="match_parent"
-                        android:layout_height="160dp"
-                        android:text="🍝"
-                        android:textSize="64sp"
-                        android:gravity="center"
-                        android:background="@color/accent_indigo_dim"/>
+                        android:layout_height="180dp"
+                        android:scaleType="centerCrop"
+                        android:background="@color/accent_indigo_dim"
+                        android:contentDescription="Featured Meal Preview" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -229,16 +229,18 @@
                         android:padding="20dp">
 
                         <TextView
+                            android:id="@+id/lblFeaturedTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Creamy Chicken Pasta"
+                            android:text="Retrieving curated selections..."
                             android:textAppearance="@style/AppHeadlineMedium" />
 
                         <TextView
+                            android:id="@+id/lblFeaturedSub"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="25 min • Easy recipe selection"
+                            android:text="Fetching parameters from TheMealDB API"
                             android:textAppearance="@style/AppBodySmall" />
 
                         <TextView

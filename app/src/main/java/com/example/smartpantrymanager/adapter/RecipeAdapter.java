@@ -4,12 +4,14 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartpantrymanager.R;
 import com.example.smartpantrymanager.model.Recipe;
+import com.example.smartpantrymanager.net.NetworkImageLoader;
 
 import java.util.List;
 
@@ -41,7 +43,19 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         h.name.setText(r.name);
         
         // Dynamically style high fidelity consumer indicator parameter string matches
-        h.count.setText("100% Match • " + r.getIngredients().size() + " ingredients ready");
+        if (r.steps != null && r.steps.contains("Discover tab")) {
+            h.count.setText("Live Match • Online Selection");
+        } else {
+            h.count.setText("100% Match • " + r.getIngredients().size() + " ingredients ready");
+        }
+
+        // Asynchronously fetch and bind live food image thumbnail via custom network loader
+        if (r.ingredientsCsv != null && r.ingredientsCsv.startsWith("http")) {
+            NetworkImageLoader.displayImage(r.ingredientsCsv, h.imgThumb);
+        } else {
+            h.imgThumb.setImageResource(android.R.drawable.ic_menu_gallery);
+        }
+
         h.itemView.setOnClickListener(v -> listener.onClick(r));
     }
 
@@ -52,11 +66,13 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView name, count;
+        ImageView imgThumb;
 
         ViewHolder(View v) {
             super(v);
             name = v.findViewById(R.id.txtRecipeName);
             count = v.findViewById(R.id.txtRecipeCount);
+            imgThumb = v.findViewById(R.id.imgRecipeThumb);
         }
     }
 }
