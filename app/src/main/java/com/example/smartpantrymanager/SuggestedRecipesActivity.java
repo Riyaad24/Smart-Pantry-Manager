@@ -20,7 +20,7 @@ import java.util.List;
 public class SuggestedRecipesActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private TextView txtNoMatch;
+    private View txtNoMatch;
     private AppDatabase db;
 
     @Override
