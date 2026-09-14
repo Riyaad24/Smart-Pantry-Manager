@@ -13,36 +13,57 @@
         android:background="@color/bg_deep_slate"
         app:elevation="0dp">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbarSuggested"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:title="Recipe Suggestions"
-            app:titleCentered="true"
-            app:titleTextAppearance="@style/AppTitleMedium" />
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="28dp"
+            android:paddingBottom="16dp">
+
+            <TextView
+                android:id="@+id/lblDiscoverTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Discover Recipes"
+                android:textAppearance="@style/AppHeadlineLarge"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Smart matches based on your available ingredients"
+                android:textAppearance="@style/AppBodySmall"
+                app:layout_constraintTop_toBottomOf="@id/lblDiscoverTitle"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:paddingBottom="90dp">
 
         <TextView
             android:id="@+id/txtTitle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="20dp"
-            android:paddingVertical="16dp"
-            android:text="Ready to cook"
-            android:textAppearance="@style/AppTitleMedium"
-            android:textColor="@color/accent_indigo"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:text="READY TO COOK NOW"
+            android:textAppearance="@style/AppTitleSmall"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerSuggested"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:paddingHorizontal="8dp"
+            android:layout_marginTop="12dp"
+            android:paddingHorizontal="16dp"
             android:clipToPadding="false"
             app:layout_constraintTop_toBottomOf="@id/txtTitle"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -50,28 +71,27 @@
 
         <LinearLayout
             android:id="@+id/txtNoMatch"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="32dp"
             android:orientation="vertical"
             android:gravity="center"
-            android:padding="32dp"
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            app:layout_constraintBottom_toBottomOf="parent">
 
-            <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:src="@android:drawable/ic_menu_report_image"
-                app:tint="@color/text_low_contrast" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="🥣"
+                android:textSize="48sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="No recipes match"
+                android:text="No recipes matched"
                 android:textAppearance="@style/AppTitleMedium"
                 android:textColor="@color/text_medium_contrast" />
 
@@ -80,9 +100,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:gravity="center"
-                android:text="Add more ingredients to your pantry to see what you can make!"
-                android:textAppearance="@style/AppBodyLarge"
-                android:textColor="@color/text_low_contrast" />
+                android:text="Populate your pantry parameters with ingredients to unlock tailored food selections."
+                android:textAppearance="@style/AppBodySmall" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
