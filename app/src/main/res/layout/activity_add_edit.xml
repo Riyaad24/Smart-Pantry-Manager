@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_deep_slate">
@@ -16,10 +17,8 @@
             android:id="@+id/toolbarAddEdit"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:title="Add Ingredient"
-            app:titleCentered="true"
             app:navigationIcon="?attr/homeAsUpIndicator"
-            app:titleTextAppearance="@style/AppTitleMedium" />
+            app:navigationIconTint="@color/text_high_contrast" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -27,19 +26,39 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="24dp">
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="40dp">
 
+            <!-- Premium Visual Header Block Title -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Manage Ingredient"
+                android:textAppearance="@style/AppHeadlineLarge" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Set precise parameter metrics for tracking maturity"
+                android:textAppearance="@style/AppBodySmall"
+                android:textColor="@color/text_medium_contrast" />
+
+            <!-- Field Wrapper: Name -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutName"
                 style="@style/AppTextInputStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
                 android:hint="Ingredient Name"
                 app:startIconDrawable="@android:drawable/ic_menu_edit"
-                app:layout_constraintTop_toTopOf="parent">
+                app:startIconTint="@color/text_low_contrast">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edtName"
@@ -49,13 +68,14 @@
                     android:textColor="@color/text_high_contrast" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Field Wrapper Group: Qty & Unit Row -->
             <LinearLayout
                 android:id="@+id/layoutQtyRow"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/layoutName">
+                android:baselineAligned="false">
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/layoutQty"
@@ -63,8 +83,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="Quantity"
-                    android:layout_marginEnd="8dp">
+                    android:layout_marginEnd="8dp"
+                    android:hint="Quantity">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edtQuantity"
@@ -80,8 +100,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="Unit"
-                    android:layout_marginStart="8dp">
+                    android:layout_marginStart="8dp"
+                    android:hint="Unit">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/edtUnit"
@@ -92,15 +112,16 @@
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
+            <!-- Field Wrapper: Expiry -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutExpiry"
                 style="@style/AppTextInputStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:hint="Expiry Date (Optional)"
                 app:startIconDrawable="@android:drawable/ic_menu_my_calendar"
-                app:layout_constraintTop_toBottomOf="@id/layoutQtyRow">
+                app:startIconTint="@color/text_low_contrast">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/edtExpiry"
@@ -110,19 +131,16 @@
                     android:textColor="@color/text_high_contrast" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Intentionally Designed Action Form Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSave"
+                style="@style/AppButtonPrimary"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:text="Save Ingredient"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                app:cornerRadius="16dp"
-                app:backgroundTint="@color/accent_indigo"
-                app:layout_constraintTop_toBottomOf="@id/layoutExpiry" />
+                android:text="Save Parameter Settings" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
