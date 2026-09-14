@@ -43,6 +43,14 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.ViewHolder
         holder.txtName.setText(item.getName());
         holder.txtQty.setText(item.getQuantity() + " " + item.getUnit());
 
+        // Process mature expiration pill formatting beautifully
+        if (item.getExpiryDate() != null && !item.getExpiryDate().trim().isEmpty()) {
+            holder.txtExpiry.setVisibility(View.VISIBLE);
+            holder.txtExpiry.setText("Exp: " + item.getExpiryDate());
+        } else {
+            holder.txtExpiry.setVisibility(View.GONE);
+        }
+
         holder.btnEdit.setOnClickListener(v -> {
             Intent i = new Intent(context, AddEditActivity.class);
             i.putExtra("pantry_id", item.getId());
@@ -71,13 +79,14 @@ public class PantryAdapter extends RecyclerView.Adapter<PantryAdapter.ViewHolder
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView txtName, txtQty;
+        TextView txtName, txtQty, txtExpiry;
         ImageButton btnEdit, btnDelete;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txtName = itemView.findViewById(R.id.txtPantryName);
             txtQty = itemView.findViewById(R.id.txtPantryQty);
+            txtExpiry = itemView.findViewById(R.id.txtPantryExpiry);
             btnEdit = itemView.findViewById(R.id.btnEdit);
             btnDelete = itemView.findViewById(R.id.btnDelete);
         }

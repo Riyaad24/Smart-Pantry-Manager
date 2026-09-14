@@ -2,14 +2,15 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="12dp"
+    android:layout_marginHorizontal="16dp"
     android:layout_marginVertical="6dp"
-    app:cardElevation="2dp"
-    app:cardCornerRadius="16dp"
-    app:strokeWidth="0.5dp"
-    app:strokeColor="@color/surface_soft_charcoal">
+    app:cardElevation="0dp"
+    app:cardCornerRadius="10dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/stroke_subtle">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -17,55 +18,82 @@
         android:padding="16dp"
         android:background="@color/surface_soft_charcoal">
 
+        <!-- Hidden required field to preserve view references cleanly if needed -->
         <View
             android:id="@+id/accentStrip"
-            android:layout_width="4dp"
+            android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@color/accent_indigo"
+            android:visibility="gone"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"/>
 
+        <!-- Ingredient Name Primary Headline -->
         <TextView
             android:id="@+id/txtPantryName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:textAppearance="@style/AppTitleMedium"
             android:textColor="@color/text_high_contrast"
+            tools:text="Organic Almond Milk"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toEndOf="@id/accentStrip"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btnEdit" />
 
+        <!-- Quantity Indicator Badge text -->
         <TextView
             android:id="@+id/txtPantryQty"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textAppearance="@style/AppBodyLarge"
-            android:textColor="@color/text_medium_contrast"
+            android:layout_marginTop="6dp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="3dp"
+            android:background="@color/accent_indigo_dim"
+            android:textColor="@color/accent_indigo"
+            android:textSize="12sp"
+            android:fontFamily="sans-serif-medium"
+            tools:text="2.5 Liters"
             app:layout_constraintTop_toBottomOf="@id/txtPantryName"
-            app:layout_constraintStart_toStartOf="@id/txtPantryName"
-            app:layout_constraintEnd_toStartOf="@id/btnEdit" />
+            app:layout_constraintStart_toStartOf="parent" />
 
+        <!-- Expiration Dynamic Tracking Pill text -->
+        <TextView
+            android:id="@+id/txtPantryExpiry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="3dp"
+            android:background="@color/warning_amber_bg"
+            android:textColor="@color/warning_amber"
+            android:textSize="12sp"
+            android:fontFamily="sans-serif"
+            tools:text="Expires: 12 Oct"
+            app:layout_constraintTop_toTopOf="@id/txtPantryQty"
+            app:layout_constraintBottom_toBottomOf="@id/txtPantryQty"
+            app:layout_constraintStart_toEndOf="@id/txtPantryQty" />
+
+        <!-- Meticulously styled image triggers for clean visual micro-interactions -->
         <ImageButton
             android:id="@+id/btnEdit"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="4dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@android:drawable/ic_menu_edit"
-            app:tint="@color/accent_indigo"
+            app:tint="@color/text_medium_contrast"
+            android:contentDescription="Edit Entry"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btnDelete" />
 
         <ImageButton
             android:id="@+id/btnDelete"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:src="@android:drawable/ic_menu_delete"
-            app:tint="@color/error_red"
+            app:tint="@color/text_low_contrast"
+            android:contentDescription="Delete Entry"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
