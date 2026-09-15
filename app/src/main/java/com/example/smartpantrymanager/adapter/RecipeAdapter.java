@@ -50,7 +50,10 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         }
 
         // Asynchronously fetch and bind live food image thumbnail via custom network loader
-        if (r.ingredientsCsv != null && r.ingredientsCsv.startsWith("http")) {
+        if (r.imageUrl != null && !r.imageUrl.isEmpty()) {
+            NetworkImageLoader.displayImage(r.imageUrl, h.imgThumb);
+        } else if (r.ingredientsCsv != null && r.ingredientsCsv.startsWith("http")) {
+            // Fallback for legacy parsing in previous turns
             NetworkImageLoader.displayImage(r.ingredientsCsv, h.imgThumb);
         } else {
             h.imgThumb.setImageResource(android.R.drawable.ic_menu_gallery);

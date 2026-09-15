@@ -14,6 +14,10 @@ public class Recipe {
     public String name;
     public String ingredientsCsv; // store as "egg, bread, milk"
     public String steps;
+    
+    // Extended fields for API support and high-fidelity rendering
+    public String mealIdApi;
+    public String imageUrl;
 
     public Recipe(String name, String ingredientsCsv, String steps) {
         this.name = name;
@@ -22,6 +26,9 @@ public class Recipe {
     }
 
     public List<String> getIngredients() {
+        if (ingredientsCsv == null || ingredientsCsv.trim().isEmpty()) {
+            return Arrays.asList();
+        }
         return Arrays.asList(ingredientsCsv.split(","));
     }
 }

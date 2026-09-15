@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-@Database(entities = {PantryItem.class, Recipe.class}, version = 1)
+@Database(entities = {PantryItem.class, Recipe.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract PantryDao pantryDao();
     public abstract RecipeDao recipeDao();
@@ -25,6 +25,7 @@ public abstract class AppDatabase extends RoomDatabase {
         if (INSTANCE == null) {
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             AppDatabase.class, "pantry_db")
+                    .fallbackToDestructiveMigration()
                     .allowMainThreadQueries() // for simplicity, use AsyncTask in real app
                     .addCallback(new Callback() {
                         @Override
