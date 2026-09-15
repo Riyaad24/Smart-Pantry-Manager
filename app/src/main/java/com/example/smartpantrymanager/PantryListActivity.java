@@ -28,6 +28,7 @@ public class PantryListActivity extends AppCompatActivity {
     private TextView lblIngredientsCount;
     private View containerDashboardHub;
     private View containerInventoryList;
+    private BottomNavigationView bottomNav;
     
     // Live API View Handles
     private ImageView imgFeaturedMeal;
@@ -55,7 +56,7 @@ public class PantryListActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerPantry);
         txtEmpty = findViewById(R.id.txtEmptyPantry);
         FloatingActionButton fab = findViewById(R.id.fabAdd);
-        BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
+        bottomNav = findViewById(R.id.bottomNav);
         View btnViewInventoryList = findViewById(R.id.btnViewInventoryList);
 
         db = AppDatabase.getInstance(this);
@@ -67,22 +68,23 @@ public class PantryListActivity extends AppCompatActivity {
 
         // Toggle state view layers fluidly on user request click
         btnViewInventoryList.setOnClickListener(v -> {
-            exposeInventoryListView(true);
+            bottomNav.setSelectedItemId(R.id.nav_pantry);
         });
 
-        bottomNav.setSelectedItemId(R.id.nav_pantry);
+        bottomNav.setSelectedItemId(R.id.nav_home);
         bottomNav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
-            if (id == R.id.nav_suggested) {
+            if (id == R.id.nav_home) {
+                exposeInventoryListView(false);
+                return true;
+            } else if (id == R.id.nav_pantry) {
+                exposeInventoryListView(true);
+                return true;
+            } else if (id == R.id.nav_suggested) {
                 startActivity(new Intent(PantryListActivity.this, SuggestedRecipesActivity.class));
                 return true;
             } else if (id == R.id.nav_settings) {
                 startActivity(new Intent(PantryListActivity.this, SettingsActivity.class));
-                return true;
-            } else if (id == R.id.nav_pantry) {
-                if (isShowingInventoryList) {
-                    exposeInventoryListView(false);
-                }
                 return true;
             }
             return false;
@@ -93,7 +95,7 @@ public class PantryListActivity extends AppCompatActivity {
             @Override
             public void handleOnBackPressed() {
                 if (isShowingInventoryList) {
-                    exposeInventoryListView(false);
+                    bottomNav.setSelectedItemId(R.id.nav_home);
                 } else {
                     setEnabled(false);
                     getOnBackPressedDispatcher().onBackPressed();
@@ -120,10 +122,19 @@ public class PantryListActivity extends AppCompatActivity {
                 lblFeaturedSub.setText("Hand-picked for you today");
                 
                 // Fetch and decode high quality food photo image stream asynchronously
-                NetworkImageLoader.displayImage(featured.ingredientsCsv, imgFeaturedMeal);
+                if (featured.imageUrl != null) {
+                    NetworkImageLoader.displayImage(featured.imageUrl, imgFeaturedMeal);
+                }
+                
+                // Set click listener to open live details
+                findViewById(R.id.imgFeaturedMeal).setOnClickListener(v -> {
+                    Intent intent = new Intent(PantryListActivity.this, RecipeDetailActivity.class);
+                    intent.putExtra("meal_id_api", featured.mealIdApi);
+                    startActivity(intent);
+                });
             } else {
-                lblFeaturedTitle.setText("Pasta Carbonara");
-                lblFeaturedSub.setText("Check your connection for live updates");
+                lblFeaturedTitle.setText("Herb Roasted Chicken");
+                lblFeaturedSub.setText("Sync ingredients to unlock matches");
             }
         });
     }

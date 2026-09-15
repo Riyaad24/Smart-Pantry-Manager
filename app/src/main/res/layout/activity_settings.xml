@@ -13,11 +13,9 @@
         android:background="@color/bg_deep_slate"
         app:elevation="0dp">
 
-        <!-- Background-less structural app bar area spacer -->
         <View
             android:layout_width="match_parent"
-            android:layout_height="24dp"
-            android:background="@color/bg_deep_slate" />
+            android:layout_height="24dp" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -40,24 +38,69 @@
                 android:text="Kitchen Profile"
                 android:textAppearance="@style/AppHeadlineLarge" />
 
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- Profile Summary Statistics Block -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="Customize your preference criteria and threshold alerts"
-                android:textAppearance="@style/AppBodySmall"
-                android:textColor="@color/text_medium_contrast" />
+                android:layout_marginTop="28dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
 
-            <!-- SUBSECTION HEADER: ALERTS -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="@color/surface_soft_charcoal"
+                    android:padding="16dp"
+                    android:layout_marginEnd="6dp">
+                    <TextView
+                        android:id="@+id/txtProfilePantryCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="--"
+                        android:textSize="22sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textColor="@color/accent_indigo" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Items Tracked"
+                        android:textAppearance="@style/AppBodySmall" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="@color/surface_soft_charcoal"
+                    android:padding="16dp"
+                    android:layout_marginStart="6dp">
+                    <TextView
+                        android:id="@+id/txtProfileRecipeCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="--"
+                        android:textSize="22sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textColor="@color/success_green" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Recipes Ready"
+                        android:textAppearance="@style/AppBodySmall" />
+                </LinearLayout>
+            </LinearLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="NOTIFICATION NOTICES"
+                android:text="CRITERIA PREFERENCES"
                 android:textAppearance="@style/AppTitleSmall" />
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardExpiry"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -79,21 +122,18 @@
                         android:layout_height="wrap_content"
                         android:text="Expiry Alerts"
                         android:textAppearance="@style/AppTitleMedium"
-                        app:thumbTint="@color/accent_indigo"
-                        app:trackTint="@color/text_low_contrast" />
+                        app:thumbTint="@color/accent_indigo" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Get notified before ingredients reach maturity limits"
+                        android:text="Monitor ingredient parameters for maturity limits"
                         android:textAppearance="@style/AppBodySmall" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- SUBSECTION HEADER: MEASUREMENTS -->
             <TextView
-                android:id="@+id/txtUnitsTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
@@ -123,9 +163,7 @@
                         android:padding="14dp"
                         android:text="Metric System (kg, ml, g)"
                         android:buttonTint="@color/accent_indigo"
-                        android:textColor="@color/text_high_contrast"
-                        android:fontFamily="sans-serif-medium"
-                        android:textSize="14sp" />
+                        android:textColor="@color/text_high_contrast" />
 
                     <View
                         android:layout_width="match_parent"
@@ -140,9 +178,7 @@
                         android:padding="14dp"
                         android:text="Imperial System (lb, oz, pcs)"
                         android:buttonTint="@color/accent_indigo"
-                        android:textColor="@color/text_high_contrast"
-                        android:fontFamily="sans-serif-medium"
-                        android:textSize="14sp" />
+                        android:textColor="@color/text_high_contrast" />
                 </RadioGroup>
             </com.google.android.material.card.MaterialCardView>
 
