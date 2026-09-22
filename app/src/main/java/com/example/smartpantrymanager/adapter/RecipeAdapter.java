@@ -7,9 +7,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartpantrymanager.R;
+import com.example.smartpantrymanager.SuggestedRecipesActivity;
 import com.example.smartpantrymanager.model.Recipe;
 import com.example.smartpantrymanager.net.NetworkImageLoader;
 
@@ -42,18 +44,23 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         Recipe r = recipes.get(pos);
         h.name.setText(r.name);
         
-        // Dynamically style high fidelity consumer indicator parameter string matches
-        if (r.steps != null && r.steps.contains("Discover tab")) {
+        // Visual indicators for strict matching logic
+        if (r.mealIdApi != null) {
+            // For API results, we show they are live online suggestions
             h.count.setText("Live Match • Online Selection");
+            h.count.setBackgroundResource(R.color.accent_indigo_dim);
+            h.count.setTextColor(ContextCompat.getColor(context, R.color.accent_indigo));
         } else {
-            h.count.setText("100% Match • " + r.getIngredients().size() + " ingredients ready");
+            // For local seeded recipes, they appear ONLY if they are a 100% match (Strict Logic)
+            h.count.setText("100% Match • Ready to cook");
+            h.count.setBackgroundResource(R.color.success_green_bg);
+            h.count.setTextColor(ContextCompat.getColor(context, R.color.success_green));
         }
 
         // Asynchronously fetch and bind live food image thumbnail via custom network loader
         if (r.imageUrl != null && !r.imageUrl.isEmpty()) {
             NetworkImageLoader.displayImage(r.imageUrl, h.imgThumb);
         } else if (r.ingredientsCsv != null && r.ingredientsCsv.startsWith("http")) {
-            // Fallback for legacy parsing in previous turns
             NetworkImageLoader.displayImage(r.ingredientsCsv, h.imgThumb);
         } else {
             h.imgThumb.setImageResource(android.R.drawable.ic_menu_gallery);
