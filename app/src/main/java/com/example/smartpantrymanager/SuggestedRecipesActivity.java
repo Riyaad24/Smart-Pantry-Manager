@@ -101,6 +101,15 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
             } else {
                 txtNoMatch.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
+                
+                // Sort list so 100% matches are ALWAYS on top (Strict Matching Priority)
+                List<PantryItem> pantry = db.pantryDao().getAll();
+                list.sort((a, b) -> {
+                    int percA = calculateMatchPercentage(a, pantry);
+                    int percB = calculateMatchPercentage(b, pantry);
+                    return Integer.compare(percB, percA);
+                });
+
                 RecipeAdapter adapter = new RecipeAdapter(this, list, recipe -> {
                     Intent intent = new Intent(this, RecipeDetailActivity.class);
                     if (recipe.mealIdApi != null && !recipe.mealIdApi.isEmpty()) {
@@ -125,7 +134,7 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
         return result;
     }
 
-    // High fidelity parameter matching logic
+    // High fidelity parameter matching logic - Robustly handles pluralization and quantity
     private int calculateMatchPercentage(Recipe recipe, List<PantryItem> pantry) {
         List<String> required = recipe.getIngredients();
         if (required.isEmpty()) return 0;
@@ -134,7 +143,9 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
         for (String r : required) {
             String normReq = normalize(r);
             for (PantryItem p : pantry) {
-                if (normReq.contains(normalize(p.getName())) || normalize(p.getName()).contains(normReq)) {
+                // Check if pantry item matches the required name AND has at least 1 unit
+                if ((normReq.contains(normalize(p.getName())) || normalize(p.getName()).contains(normReq)) 
+                     && p.getQuantity() >= 1) {
                     matchCount++;
                     break;
                 }
