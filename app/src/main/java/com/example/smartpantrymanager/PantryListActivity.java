@@ -16,8 +16,10 @@ import com.example.smartpantrymanager.adapter.PantryAdapter;
 import com.example.smartpantrymanager.db.AppDatabase;
 import com.example.smartpantrymanager.model.PantryItem;
 import com.example.smartpantrymanager.model.Recipe;
+import com.example.smartpantrymanager.model.User;
 import com.example.smartpantrymanager.net.NetworkImageLoader;
 import com.example.smartpantrymanager.net.TheMealDbClient;
+import com.example.smartpantrymanager.utils.SessionManager;
 
 import java.util.List;
 
@@ -26,6 +28,7 @@ public class PantryListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private TextView txtEmpty;
     private TextView lblIngredientsCount;
+    private TextView tvGreeting;
     private View containerDashboardHub;
     private View containerInventoryList;
     private BottomNavigationView bottomNav;
@@ -36,18 +39,28 @@ public class PantryListActivity extends AppCompatActivity {
     
     private PantryAdapter adapter;
     private AppDatabase db;
+    private SessionManager sessionManager;
     private List<PantryItem> pantryList;
     private boolean isShowingInventoryList = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        sessionManager = new SessionManager(this);
+        if (!sessionManager.isLoggedIn()) {
+            startActivity(new Intent(this, SignInActivity.class));
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_pantry_list);
 
         // Map fresh view handles cleanly
         containerDashboardHub = findViewById(R.id.containerDashboardHub);
         containerInventoryList = findViewById(R.id.containerInventoryList);
         lblIngredientsCount = findViewById(R.id.lblIngredientsCount);
+        tvGreeting = findViewById(R.id.tvGreeting);
         
         imgFeaturedMeal = findViewById(R.id.imgFeaturedMeal);
         lblFeaturedTitle = findViewById(R.id.lblFeaturedTitle);
@@ -61,6 +74,8 @@ public class PantryListActivity extends AppCompatActivity {
 
         db = AppDatabase.getInstance(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        loadUserInfo();
 
         fab.setOnClickListener(v -> {
             startActivity(new Intent(PantryListActivity.this, AddEditActivity.class));
@@ -110,7 +125,21 @@ public class PantryListActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (!sessionManager.isLoggedIn()) {
+            startActivity(new Intent(this, SignInActivity.class));
+            finish();
+            return;
+        }
+        loadUserInfo();
         loadPantry(); // Refresh counts parameters dynamically
+    }
+
+    private void loadUserInfo() {
+        int userId = sessionManager.getUserId();
+        User user = db.userDao().findById(userId);
+        if (user != null && tvGreeting != null) {
+            tvGreeting.setText("Welcome back, " + user.getFullName() + " 👋");
+        }
     }
 
     private void loadFeaturedMealSuggestion() {
@@ -151,7 +180,8 @@ public class PantryListActivity extends AppCompatActivity {
     }
 
     private void loadPantry() {
-        pantryList = db.pantryDao().getAll();
+        int userId = sessionManager.getUserId();
+        pantryList = db.pantryDao().getAllForUser(userId);
         
         // Dynamically update primary kitchen summary indicator string parameters
         if (pantryList.isEmpty()) {

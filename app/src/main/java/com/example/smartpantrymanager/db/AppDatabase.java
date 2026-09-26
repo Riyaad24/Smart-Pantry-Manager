@@ -10,15 +10,18 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.smartpantrymanager.model.PantryItem;
 import com.example.smartpantrymanager.model.Recipe;
+import com.example.smartpantrymanager.model.User;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 
-@Database(entities = {PantryItem.class, Recipe.class}, version = 2)
+@Database(entities = {PantryItem.class, Recipe.class, User.class}, version = 3)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract PantryDao pantryDao();
     public abstract RecipeDao recipeDao();
+    public abstract UserDao userDao();
+
     private static AppDatabase INSTANCE;
 
     public static synchronized AppDatabase getInstance(Context context) {
@@ -26,7 +29,7 @@ public abstract class AppDatabase extends RoomDatabase {
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             AppDatabase.class, "pantry_db")
                     .fallbackToDestructiveMigration()
-                    .allowMainThreadQueries() // for simplicity, use AsyncTask in real app
+                    .allowMainThreadQueries()
                     .addCallback(new Callback() {
                         @Override
                         public void onCreate(@NonNull SupportSQLiteDatabase db) {

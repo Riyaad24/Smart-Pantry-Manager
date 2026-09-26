@@ -1,0 +1,7 @@
+- [ ] Create User entity, UserDao, and SessionManager
+- [ ] Update AppDatabase, PantryItem, and PantryDao for user data scoping
+- [ ] Create SignInActivity and activity_sign_in.xml
+- [ ] Create SignUpActivity and activity_sign_up.xml
+- [ ] Create ProfileActivity and activity_profile.xml (with Edit Profile and Sign Out)
+- [ ] Update PantryListActivity, AddEditActivity, and SettingsActivity for session checks and personalization
+- [ ] Build and verify app functionality

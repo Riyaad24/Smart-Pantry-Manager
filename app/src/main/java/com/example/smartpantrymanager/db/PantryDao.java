@@ -12,6 +12,9 @@ import java.util.List;
 
 @Dao
 public interface PantryDao {
+    @Query("SELECT * FROM pantry_items WHERE userId = :userId")
+    List<PantryItem> getAllForUser(int userId);
+
     @Query("SELECT * FROM pantry_items")
     List<PantryItem> getAll();
 
