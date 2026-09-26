@@ -9,12 +9,14 @@ public class PantryItem {
 
     @PrimaryKey(autoGenerate = true)
     public int id;
+    public int userId;
     public String name;
     public double quantity;
     public String unit; // e.g kg, pcs, ml
     public String expiryDate;
 
-    public PantryItem(String name, double quantity, String unit, String expiryDate) {
+    public PantryItem(int userId, String name, double quantity, String unit, String expiryDate) {
+        this.userId = userId;
         this.name = name;
         this.quantity = quantity;
         this.unit = unit;
@@ -22,6 +24,7 @@ public class PantryItem {
     }
 
     public int getId() { return id; }
+    public int getUserId() { return userId; }
     public String getName() { return name; }
     public double getQuantity() { return quantity; }
     public String getUnit() { return unit; }

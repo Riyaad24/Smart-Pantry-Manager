@@ -12,6 +12,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import com.example.smartpantrymanager.db.AppDatabase;
 import com.example.smartpantrymanager.model.PantryItem;
+import com.example.smartpantrymanager.utils.SessionManager;
 
 public class AddEditActivity extends AppCompatActivity {
 
@@ -20,6 +21,7 @@ public class AddEditActivity extends AppCompatActivity {
     private MaterialButton btnSave;
 
     private AppDatabase db;
+    private SessionManager sessionManager;
     private int editItemId = -1; // -1 means ADD mode, else EDIT mode
     private PantryItem existingItem = null;
 
@@ -27,6 +29,13 @@ public class AddEditActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit);
+
+        sessionManager = new SessionManager(this);
+        if (!sessionManager.isLoggedIn()) {
+            startActivity(new Intent(this, SignInActivity.class));
+            finish();
+            return;
+        }
 
         // Init views
         edtName = findViewById(R.id.edtName);
@@ -63,8 +72,9 @@ public class AddEditActivity extends AppCompatActivity {
             edtExpiry.setText(expiry);
             btnSave.setText("Update Ingredient");
 
-            // Fetch full object for update
-            for (PantryItem item : db.pantryDao().getAll()) {
+            // Fetch full object for update scoped to user
+            int userId = sessionManager.getUserId();
+            for (PantryItem item : db.pantryDao().getAllForUser(userId)) {
                 if (item.getId() == editItemId) {
                     existingItem = item;
                     break;
@@ -83,9 +93,9 @@ public class AddEditActivity extends AppCompatActivity {
     private boolean validateInputs() {
         boolean isValid = true;
 
-        String name = edtName.getText().toString().trim();
-        String qtyStr = edtQuantity.getText().toString().trim();
-        String unit = edtUnit.getText().toString().trim();
+        String name = edtName.getText() != null ? edtName.getText().toString().trim() : "";
+        String qtyStr = edtQuantity.getText() != null ? edtQuantity.getText().toString().trim() : "";
+        String unit = edtUnit.getText() != null ? edtUnit.getText().toString().trim() : "";
 
         // Name validation
         if (name.isEmpty()) {
@@ -126,7 +136,7 @@ public class AddEditActivity extends AppCompatActivity {
         }
 
         // Expiry is optional, but if entered validate format YYYY-MM-DD
-        String expiry = edtExpiry.getText().toString().trim();
+        String expiry = edtExpiry.getText() != null ? edtExpiry.getText().toString().trim() : "";
         if (!expiry.isEmpty() && !expiry.matches("\\d{4}-\\d{2}-\\d{2}")) {
             edtExpiry.setError("Use YYYY-MM-DD format");
             isValid = false;
@@ -136,24 +146,29 @@ public class AddEditActivity extends AppCompatActivity {
     }
 
     private void saveToDatabase() {
-        String name = edtName.getText().toString().trim();
-        double quantity = Double.parseDouble(edtQuantity.getText().toString().trim());
-        String unit = edtUnit.getText().toString().trim();
-        String expiry = edtExpiry.getText().toString().trim();
+        String name = edtName.getText() != null ? edtName.getText().toString().trim() : "";
+        double quantity = Double.parseDouble(edtQuantity.getText() != null ? edtQuantity.getText().toString().trim() : "0");
+        String unit = edtUnit.getText() != null ? edtUnit.getText().toString().trim() : "";
+        String expiry = edtExpiry.getText() != null ? edtExpiry.getText().toString().trim() : "";
+
+        int userId = sessionManager.getUserId();
 
         if (editItemId == -1) {
             // CREATE
-            PantryItem newItem = new PantryItem(name, quantity, unit, expiry);
+            PantryItem newItem = new PantryItem(userId, name, quantity, unit, expiry);
             db.pantryDao().insert(newItem);
             Toast.makeText(this, name + " added to pantry", Toast.LENGTH_SHORT).show();
         } else {
             // UPDATE
-            existingItem.name = name;
-            existingItem.quantity = quantity;
-            existingItem.unit = unit;
-            existingItem.expiryDate = expiry;
-            db.pantryDao().update(existingItem);
-            Toast.makeText(this, name + " updated", Toast.LENGTH_SHORT).show();
+            if (existingItem != null) {
+                existingItem.userId = userId;
+                existingItem.name = name;
+                existingItem.quantity = quantity;
+                existingItem.unit = unit;
+                existingItem.expiryDate = expiry;
+                db.pantryDao().update(existingItem);
+                Toast.makeText(this, name + " updated", Toast.LENGTH_SHORT).show();
+            }
         }
 
         // Go back to Pantry List - prove data persists

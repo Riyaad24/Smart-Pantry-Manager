@@ -8,8 +8,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.example.smartpantrymanager.db.AppDatabase;
+import com.example.smartpantrymanager.utils.SessionManager;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -17,11 +19,20 @@ public class SettingsActivity extends AppCompatActivity {
     private RadioGroup radioUnits;
     private RadioButton radioMetric, radioImperial;
     private TextView txtPantryCount, txtRecipeCount;
+    private MaterialCardView cardManageProfile;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        sessionManager = new SessionManager(this);
+        if (!sessionManager.isLoggedIn()) {
+            startActivity(new Intent(this, SignInActivity.class));
+            finish();
+            return;
+        }
 
         switchExpiryAlert = findViewById(R.id.switchExpiryAlert);
         radioUnits = findViewById(R.id.radioUnits);
@@ -29,6 +40,7 @@ public class SettingsActivity extends AppCompatActivity {
         radioImperial = findViewById(R.id.radioImperial);
         txtPantryCount = findViewById(R.id.txtProfilePantryCount);
         txtRecipeCount = findViewById(R.id.txtProfileRecipeCount);
+        cardManageProfile = findViewById(R.id.cardManageProfile);
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
 
         SharedPreferences prefs = getSharedPreferences("SmartPantryPrefs", MODE_PRIVATE);
@@ -45,9 +57,14 @@ public class SettingsActivity extends AppCompatActivity {
             else prefs.edit().putString("units", "Imperial").apply();
         });
 
-        // Initialize high fidelity user kitchen stats from local Room repository
+        cardManageProfile.setOnClickListener(v -> {
+            startActivity(new Intent(SettingsActivity.this, ProfileActivity.class));
+        });
+
+        // Initialize high fidelity user kitchen stats from local Room repository scoped to current user
         AppDatabase db = AppDatabase.getInstance(this);
-        int pCount = db.pantryDao().getAll().size();
+        int userId = sessionManager.getUserId();
+        int pCount = db.pantryDao().getAllForUser(userId).size();
         int rCount = db.recipeDao().getAll().size();
         txtPantryCount.setText(String.valueOf(pCount));
         txtRecipeCount.setText(String.valueOf(rCount));
@@ -68,5 +85,19 @@ public class SettingsActivity extends AppCompatActivity {
             }
             return false;
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!sessionManager.isLoggedIn()) {
+            startActivity(new Intent(this, SignInActivity.class));
+            finish();
+            return;
+        }
+        AppDatabase db = AppDatabase.getInstance(this);
+        int userId = sessionManager.getUserId();
+        int pCount = db.pantryDao().getAllForUser(userId).size();
+        txtPantryCount.setText(String.valueOf(pCount));
     }
 }

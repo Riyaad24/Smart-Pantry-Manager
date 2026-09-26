@@ -15,6 +15,7 @@ import com.example.smartpantrymanager.db.AppDatabase;
 import com.example.smartpantrymanager.model.PantryItem;
 import com.example.smartpantrymanager.model.Recipe;
 import com.example.smartpantrymanager.net.TheMealDbClient;
+import com.example.smartpantrymanager.utils.SessionManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,11 +25,20 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private View txtNoMatch;
     private AppDatabase db;
+    private SessionManager sessionManager;
     private EditText edtSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        sessionManager = new SessionManager(this);
+        if (!sessionManager.isLoggedIn()) {
+            startActivity(new Intent(this, SignInActivity.class));
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_suggested);
 
         recyclerView = findViewById(R.id.recyclerSuggested);
@@ -40,15 +50,20 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         bottomNav.setSelectedItemId(R.id.nav_suggested);
         bottomNav.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.nav_pantry) {
+            int id = item.getItemId();
+            if (id == R.id.nav_home) {
                 startActivity(new Intent(this, PantryListActivity.class));
                 finish();
                 return true;
-            } else if (item.getItemId() == R.id.nav_settings) {
+            } else if (id == R.id.nav_pantry) {
+                startActivity(new Intent(this, PantryListActivity.class));
+                finish();
+                return true;
+            } else if (id == R.id.nav_settings) {
                 startActivity(new Intent(this, SettingsActivity.class));
                 finish();
                 return true;
-            } else if (item.getItemId() == R.id.nav_suggested) {
+            } else if (id == R.id.nav_suggested) {
                 return true;
             }
             return false;
@@ -78,7 +93,8 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
     }
 
     private void loadSuggestedRecipes() {
-        List<PantryItem> pantry = db.pantryDao().getAll();
+        int userId = sessionManager.getUserId();
+        List<PantryItem> pantry = db.pantryDao().getAllForUser(userId);
         List<Recipe> allRecipes = db.recipeDao().getAll();
         
         // Build query keywords from primary inventory parameters
@@ -93,6 +109,38 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
         });
     }
 
+    private List<Recipe> getStrictMatchingRecipes(List<Recipe> allRecipes, List<PantryItem> pantry) {
+        List<Recipe> matched = new ArrayList<>();
+        List<String> pantryNames = new ArrayList<>();
+        for (PantryItem item : pantry) {
+            pantryNames.add(item.getName().toLowerCase().trim());
+        }
+
+        for (Recipe recipe : allRecipes) {
+            if (recipe.ingredientsCsv == null) continue;
+            String[] reqs = recipe.ingredientsCsv.toLowerCase().split(",");
+            boolean hasAll = true;
+            for (String req : reqs) {
+                String cleanReq = req.trim();
+                boolean found = false;
+                for (String pName : pantryNames) {
+                    if (pName.contains(cleanReq) || cleanReq.contains(pName)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    hasAll = false;
+                    break;
+                }
+            }
+            if (hasAll && !reqs[0].isEmpty()) {
+                matched.add(recipe);
+            }
+        }
+        return matched;
+    }
+
     private void updateRecipeList(List<Recipe> list) {
         runOnUiThread(() -> {
             if (list == null || list.isEmpty()) {
@@ -101,22 +149,12 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
             } else {
                 txtNoMatch.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
-                
-                // Sort list so 100% matches are ALWAYS on top (Strict Matching Priority)
-                List<PantryItem> pantry = db.pantryDao().getAll();
-                list.sort((a, b) -> {
-                    int percA = calculateMatchPercentage(a, pantry);
-                    int percB = calculateMatchPercentage(b, pantry);
-                    return Integer.compare(percB, percA);
-                });
-
                 RecipeAdapter adapter = new RecipeAdapter(this, list, recipe -> {
-                    Intent intent = new Intent(this, RecipeDetailActivity.class);
-                    if (recipe.mealIdApi != null && !recipe.mealIdApi.isEmpty()) {
-                        intent.putExtra("meal_id_api", recipe.mealIdApi);
-                    } else {
-                        intent.putExtra("recipe_id", recipe.id);
-                    }
+                    Intent intent = new Intent(SuggestedRecipesActivity.this, RecipeDetailActivity.class);
+                    intent.putExtra("recipe_name", recipe.name);
+                    intent.putExtra("recipe_steps", recipe.steps);
+                    intent.putExtra("recipe_ingredients", recipe.ingredientsCsv);
+                    intent.putExtra("meal_id_api", recipe.mealIdApi);
                     startActivity(intent);
                 });
                 recyclerView.setAdapter(adapter);
@@ -124,40 +162,14 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
         });
     }
 
-    private List<Recipe> getStrictMatchingRecipes(List<Recipe> allRecipes, List<PantryItem> pantry) {
-        List<Recipe> result = new ArrayList<>();
-        for (Recipe recipe : allRecipes) {
-            if (calculateMatchPercentage(recipe, pantry) >= 100) {
-                result.add(recipe);
-            }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!sessionManager.isLoggedIn()) {
+            startActivity(new Intent(this, SignInActivity.class));
+            finish();
+            return;
         }
-        return result;
-    }
-
-    // High fidelity parameter matching logic - Robustly handles pluralization and quantity
-    private int calculateMatchPercentage(Recipe recipe, List<PantryItem> pantry) {
-        List<String> required = recipe.getIngredients();
-        if (required.isEmpty()) return 0;
-        
-        int matchCount = 0;
-        for (String r : required) {
-            String normReq = normalize(r);
-            for (PantryItem p : pantry) {
-                // Check if pantry item matches the required name AND has at least 1 unit
-                if ((normReq.contains(normalize(p.getName())) || normalize(p.getName()).contains(normReq)) 
-                     && p.getQuantity() >= 1) {
-                    matchCount++;
-                    break;
-                }
-            }
-        }
-        return (int) ((matchCount / (float) required.size()) * 100);
-    }
-
-    private String normalize(String s) {
-        if (s == null) return "";
-        s = s.toLowerCase().trim();
-        if (s.endsWith("s") && s.length() > 3) s = s.substring(0, s.length() - 1);
-        return s;
+        loadSuggestedRecipes();
     }
 }

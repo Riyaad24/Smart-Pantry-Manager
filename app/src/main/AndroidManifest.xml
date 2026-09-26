@@ -13,14 +13,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SmartPantryManager">
+
         <activity
-            android:name=".PantryListActivity"
+            android:name=".SignInActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".SignUpActivity" android:exported="false" />
+        <activity android:name=".ProfileActivity" android:exported="false" />
+        <activity android:name=".EditProfileActivity" android:exported="false" />
+        <activity android:name=".PantryListActivity" android:exported="false" />
         <activity android:name=".AddEditActivity" android:exported="false" />
         <activity android:name=".SuggestedRecipesActivity" android:exported="false" />
         <activity android:name=".RecipeDetailActivity" android:exported="false" />
