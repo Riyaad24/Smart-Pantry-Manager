@@ -21,7 +21,7 @@ import java.util.concurrent.Executors;
 public class TheMealDbClient {
 
     private static final String BASE_URL = "https://www.themealdb.com/api/json/v1/1/";
-    private static final ExecutorService executor = Executors.newSingleThreadExecutor();
+    private static final ExecutorService executor = Executors.newFixedThreadPool(4);
     private static final Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public interface MealSuggestionsCallback {
