@@ -19,7 +19,7 @@ The core value of this application is the **Strict-Matching Logic**. A recipe is
 - **Modern UI:** Designed with a premium Dark Mode theme using Material 3 and custom design tokens.
 
 ## Technical Details
-- **Language:** Strictly Java (0% Kotlin).
+- **Language:** Strictly Java.
 - **Database:** **SQLite (via Room Persistence Library)**. 
   - *Why:* SQLite was chosen for its offline-first reliability and efficient local data persistence, ensuring user data is never lost when the app closes.
 - **Networking:** Asynchronous background execution using `HttpURLConnection` and `ExecutorService` (No heavy 3rd-party libraries to ensure a lightweight build).
