@@ -138,7 +138,12 @@ public class PantryListActivity extends AppCompatActivity {
         int userId = sessionManager.getUserId();
         User user = db.userDao().findById(userId);
         if (user != null && tvGreeting != null) {
-            tvGreeting.setText("Welcome back, " + user.getFullName() + " 👋");
+            boolean isNewUser = getIntent().getBooleanExtra("is_new_user", false);
+            if (isNewUser) {
+                tvGreeting.setText("Welcome to Smart Pantry, " + user.getFullName() + " 👋");
+            } else {
+                tvGreeting.setText("Welcome back, " + user.getFullName() + " 👋");
+            }
         }
     }
 

@@ -17,8 +17,6 @@ import com.google.android.material.textfield.TextInputEditText;
 public class SignUpActivity extends AppCompatActivity {
 
     private TextInputEditText etFullName, etEmail, etPassword, etConfirmPassword;
-    private Button btnSignUp;
-    private TextView tvSignIn;
     private SessionManager sessionManager;
     private AppDatabase db;
 
@@ -34,8 +32,8 @@ public class SignUpActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
-        btnSignUp = findViewById(R.id.btnSignUp);
-        tvSignIn = findViewById(R.id.tvSignIn);
+        Button btnSignUp = findViewById(R.id.btnSignUp);
+        TextView tvSignIn = findViewById(R.id.tvSignIn);
 
         btnSignUp.setOnClickListener(v -> attemptSignUp());
 
@@ -89,8 +87,9 @@ public class SignUpActivity extends AppCompatActivity {
 
         if (userId > 0) {
             sessionManager.createLoginSession((int) userId, email);
-            Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Account created successfully! Welcome, " + fullName, Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(SignUpActivity.this, PantryListActivity.class);
+            intent.putExtra("is_new_user", true);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();

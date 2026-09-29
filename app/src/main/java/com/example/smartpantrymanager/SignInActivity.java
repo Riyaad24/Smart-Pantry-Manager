@@ -18,8 +18,6 @@ import com.google.android.material.textfield.TextInputEditText;
 public class SignInActivity extends AppCompatActivity {
 
     private TextInputEditText etEmail, etPassword;
-    private Button btnSignIn;
-    private TextView tvSignUp, tvForgotPassword;
     private SessionManager sessionManager;
     private AppDatabase db;
 
@@ -29,7 +27,9 @@ public class SignInActivity extends AppCompatActivity {
         
         sessionManager = new SessionManager(this);
         if (sessionManager.isLoggedIn()) {
-            startActivity(new Intent(this, PantryListActivity.class));
+            Intent intent = new Intent(this, PantryListActivity.class);
+            intent.putExtra("is_new_user", false);
+            startActivity(intent);
             finish();
             return;
         }
@@ -40,9 +40,9 @@ public class SignInActivity extends AppCompatActivity {
 
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
-        btnSignIn = findViewById(R.id.btnSignIn);
-        tvSignUp = findViewById(R.id.tvSignUp);
-        tvForgotPassword = findViewById(R.id.tvForgotPassword);
+        Button btnSignIn = findViewById(R.id.btnSignIn);
+        TextView tvSignUp = findViewById(R.id.tvSignUp);
+        TextView tvForgotPassword = findViewById(R.id.tvForgotPassword);
 
         btnSignIn.setOnClickListener(v -> attemptSignIn());
 
@@ -51,7 +51,7 @@ public class SignInActivity extends AppCompatActivity {
         });
 
         tvForgotPassword.setOnClickListener(v -> {
-            String email = etEmail.getText().toString().trim();
+            String email = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
             if (TextUtils.isEmpty(email)) {
                 Toast.makeText(this, "Please enter your email address first", Toast.LENGTH_SHORT).show();
             } else {
@@ -65,8 +65,8 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void attemptSignIn() {
-        String email = etEmail.getText().toString().trim();
-        String password = etPassword.getText().toString().trim();
+        String email = etEmail.getText() != null ? etEmail.getText().toString().trim() : "";
+        String password = etPassword.getText() != null ? etPassword.getText().toString().trim() : "";
 
         if (TextUtils.isEmpty(email)) {
             etEmail.setError("Email is required");
@@ -85,7 +85,8 @@ public class SignInActivity extends AppCompatActivity {
             sessionManager.createLoginSession(user.getId(), user.getEmail());
             Toast.makeText(this, "Welcome back, " + user.getFullName() + "!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(SignInActivity.this, PantryListActivity.class);
-            intent.putExtra("user_name", user.getFullName());
+            intent.putExtra("is_new_user", false);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
         } else {
