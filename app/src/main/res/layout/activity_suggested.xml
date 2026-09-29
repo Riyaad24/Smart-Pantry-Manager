@@ -13,9 +13,10 @@
         android:background="@color/bg_deep_slate"
         app:elevation="0dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:paddingHorizontal="24dp"
             android:paddingTop="28dp"
             android:paddingBottom="16dp">
@@ -25,108 +26,234 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Discover Recipes"
-                android:textAppearance="@style/AppHeadlineLarge"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:textAppearance="@style/AppHeadlineLarge" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Smart matches based on your available ingredients"
-                android:textAppearance="@style/AppBodySmall"
-                app:layout_constraintTop_toBottomOf="@id/lblDiscoverTitle"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:text="Smart matches based on your available pantry ingredients"
+                android:textAppearance="@style/AppBodySmall" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:clipToPadding="false"
         android:paddingBottom="90dp">
 
-        <!-- Premium Integrated Search Bar Parameter Input -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layoutSearch"
-            style="@style/AppTextInputStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginTop="8dp"
-            android:hint="Search for recipes or ingredients..."
-            app:startIconDrawable="@android:drawable/ic_menu_search"
-            app:startIconTint="@color/text_low_contrast"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edtRecipeSearch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:imeOptions="actionSearch"
-                android:inputType="text"
-                android:textColor="@color/text_high_contrast" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <TextView
-            android:id="@+id/txtTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:text="READY TO COOK NOW"
-            android:textAppearance="@style/AppTitleSmall"
-            app:layout_constraintTop_toBottomOf="@id/layoutSearch"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerSuggested"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="12dp"
-            android:paddingHorizontal="16dp"
-            android:clipToPadding="false"
-            app:layout_constraintTop_toBottomOf="@id/txtTitle"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:listitem="@layout/item_recipe" />
-
         <LinearLayout
-            android:id="@+id/txtNoMatch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="32dp"
             android:orientation="vertical"
-            android:gravity="center"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            android:paddingHorizontal="24dp"
+            android:paddingTop="8dp">
 
-            <TextView
+            <!-- Search Bar -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layoutSearch"
+                style="@style/AppTextInputStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="🥣"
-                android:textSize="48sp" />
+                android:hint="Search recipes or ingredients..."
+                app:startIconDrawable="@android:drawable/ic_menu_search"
+                app:startIconTint="@color/text_low_contrast">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtRecipeSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:textColor="@color/text_high_contrast" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- READY TO COOK NOW (Strict Matching) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="READY TO COOK NOW"
+                android:textAppearance="@style/AppTitleSmall" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="No recipes matched"
-                android:textAppearance="@style/AppTitleMedium"
-                android:textColor="@color/text_medium_contrast" />
+                android:layout_marginTop="2dp"
+                android:text="Recipes you can make right now with your pantry"
+                android:textAppearance="@style/AppBodySmall"
+                android:layout_marginBottom="12dp" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerReadyToCook"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_recipe" />
+
+            <!-- BASED ON YOUR PANTRY -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="28dp"
+                android:text="BASED ON YOUR PANTRY"
+                android:textAppearance="@style/AppTitleSmall" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:id="@+id/containerPantryChips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <!-- Dynamic ingredient chips will be added here -->
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <!-- EXPLORE CATEGORIES -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="EXPLORE CATEGORIES"
+                android:textAppearance="@style/AppTitleSmall" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardCategoryQuick"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="6dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="@color/surface_soft_charcoal"
+                    app:cardCornerRadius="10dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/stroke_subtle">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="14dp"
+                        android:text="⚡ Quick Meals"
+                        android:textColor="@color/text_high_contrast"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardCategoryDinner"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginHorizontal="3dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="@color/surface_soft_charcoal"
+                    app:cardCornerRadius="10dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/stroke_subtle">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="14dp"
+                        android:text="🍝 Dinner"
+                        android:textColor="@color/text_high_contrast"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardCategoryDessert"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="@color/surface_soft_charcoal"
+                    app:cardCornerRadius="10dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/stroke_subtle">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="14dp"
+                        android:text="🍰 Dessert"
+                        android:textColor="@color/text_high_contrast"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- ALL DISCOVERED / ONLINE SUGGESTIONS -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="ONLINE SUGGESTIONS"
+                android:textAppearance="@style/AppTitleSmall" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerSuggested"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_recipe" />
+
+            <!-- No Match State -->
+            <LinearLayout
+                android:id="@+id/txtNoMatch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:orientation="vertical"
                 android:gravity="center"
-                android:text="Populate your pantry parameters with ingredients to unlock tailored food selections."
-                android:textAppearance="@style/AppBodySmall" />
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="🥣"
+                    android:textSize="48sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="No recipes matched"
+                    android:textAppearance="@style/AppTitleMedium"
+                    android:textColor="@color/text_medium_contrast" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:text="Populate your pantry parameters with ingredients to unlock tailored food selections."
+                    android:textAppearance="@style/AppBodySmall" />
+            </LinearLayout>
+
         </LinearLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
