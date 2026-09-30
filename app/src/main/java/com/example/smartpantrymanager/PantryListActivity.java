@@ -22,6 +22,7 @@ import com.example.smartpantrymanager.net.TheMealDbClient;
 import com.example.smartpantrymanager.utils.SessionManager;
 
 import java.util.List;
+import java.util.concurrent.Executors;
 
 public class PantryListActivity extends AppCompatActivity {
 
@@ -135,16 +136,20 @@ public class PantryListActivity extends AppCompatActivity {
     }
 
     private void loadUserInfo() {
-        int userId = sessionManager.getUserId();
-        User user = db.userDao().findById(userId);
-        if (user != null && tvGreeting != null) {
-            boolean isNewUser = getIntent().getBooleanExtra("is_new_user", false);
-            if (isNewUser) {
-                tvGreeting.setText("Welcome to Smart Pantry, " + user.getFullName() + " 👋");
-            } else {
-                tvGreeting.setText("Welcome back, " + user.getFullName() + " 👋");
-            }
-        }
+        Executors.newSingleThreadExecutor().execute(() -> {
+            int userId = sessionManager.getUserId();
+            User user = db.userDao().findById(userId);
+            runOnUiThread(() -> {
+                if (user != null && tvGreeting != null) {
+                    boolean isNewUser = getIntent().getBooleanExtra("is_new_user", false);
+                    if (isNewUser) {
+                        tvGreeting.setText("Welcome to Smart Pantry, " + user.getFullName() + " 👋");
+                    } else {
+                        tvGreeting.setText("Welcome back, " + user.getFullName() + " 👋");
+                    }
+                }
+            });
+        });
     }
 
     private void loadFeaturedMealSuggestion() {
@@ -185,20 +190,24 @@ public class PantryListActivity extends AppCompatActivity {
     }
 
     private void loadPantry() {
-        int userId = sessionManager.getUserId();
-        pantryList = db.pantryDao().getAllForUser(userId);
-        
-        // Dynamically update primary kitchen summary indicator string parameters
-        if (pantryList.isEmpty()) {
-            lblIngredientsCount.setText("No ingredients available");
-            txtEmpty.setVisibility(View.VISIBLE);
-            recyclerView.setVisibility(View.GONE);
-        } else {
-            lblIngredientsCount.setText(pantryList.size() + " ingredients available");
-            txtEmpty.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.VISIBLE);
-            adapter = new PantryAdapter(this, pantryList, db);
-            recyclerView.setAdapter(adapter);
-        }
+        Executors.newSingleThreadExecutor().execute(() -> {
+            int userId = sessionManager.getUserId();
+            List<PantryItem> list = db.pantryDao().getAllForUser(userId);
+            runOnUiThread(() -> {
+                pantryList = list;
+                // Dynamically update primary kitchen summary indicator string parameters
+                if (pantryList.isEmpty()) {
+                    lblIngredientsCount.setText("No ingredients available");
+                    txtEmpty.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                } else {
+                    lblIngredientsCount.setText(pantryList.size() + " ingredients available");
+                    txtEmpty.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    adapter = new PantryAdapter(this, pantryList, db);
+                    recyclerView.setAdapter(adapter);
+                }
+            });
+        });
     }
 }
