@@ -17,14 +17,16 @@ import com.google.android.material.textfield.TextInputEditText;
 public class AddRecipeActivity extends AppCompatActivity {
 
     private TextInputEditText edtRecipeName, edtIngredients, edtSteps;
+    private Button btnSaveRecipe;
     private AppDatabase db;
-    private SessionManager sessionManager;
+    private int editRecipeId = -1;
+    private Recipe existingRecipe = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        sessionManager = new SessionManager(this);
+        SessionManager sessionManager = new SessionManager(this);
         if (!sessionManager.isLoggedIn()) {
             startActivity(new Intent(this, SignInActivity.class));
             finish();
@@ -39,13 +41,28 @@ public class AddRecipeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            toolbar.setNavigationOnClickListener(v -> onBackPressed());
+            toolbar.setNavigationOnClickListener(v -> finish());
         }
 
         edtRecipeName = findViewById(R.id.edtRecipeName);
         edtIngredients = findViewById(R.id.edtIngredients);
         edtSteps = findViewById(R.id.edtSteps);
-        Button btnSaveRecipe = findViewById(R.id.btnSaveRecipe);
+        btnSaveRecipe = findViewById(R.id.btnSaveRecipe);
+
+        Intent intent = getIntent();
+        if (intent.hasExtra("recipe_id")) {
+            editRecipeId = intent.getIntExtra("recipe_id", -1);
+            String name = intent.getStringExtra("recipe_name");
+            String ingredients = intent.getStringExtra("recipe_ingredients");
+            String steps = intent.getStringExtra("recipe_steps");
+
+            edtRecipeName.setText(name);
+            edtIngredients.setText(ingredients);
+            edtSteps.setText(steps);
+            btnSaveRecipe.setText("Update Custom Recipe");
+
+            existingRecipe = db.recipeDao().getById(editRecipeId);
+        }
 
         btnSaveRecipe.setOnClickListener(v -> saveRecipe());
     }
@@ -73,10 +90,21 @@ public class AddRecipeActivity extends AppCompatActivity {
             return;
         }
 
-        Recipe newRecipe = new Recipe(name, ingredients, steps);
-        db.recipeDao().insert(newRecipe);
-
-        Toast.makeText(this, "Custom recipe '" + name + "' added successfully!", Toast.LENGTH_SHORT).show();
+        if (editRecipeId == -1) {
+            // CREATE
+            Recipe newRecipe = new Recipe(name, ingredients, steps);
+            db.recipeDao().insert(newRecipe);
+            Toast.makeText(this, "Custom recipe '" + name + "' added successfully!", Toast.LENGTH_SHORT).show();
+        } else {
+            // UPDATE
+            if (existingRecipe != null) {
+                existingRecipe.name = name;
+                existingRecipe.ingredientsCsv = ingredients;
+                existingRecipe.steps = steps;
+                db.recipeDao().update(existingRecipe);
+                Toast.makeText(this, "Custom recipe '" + name + "' updated successfully!", Toast.LENGTH_SHORT).show();
+            }
+        }
         finish();
     }
 }

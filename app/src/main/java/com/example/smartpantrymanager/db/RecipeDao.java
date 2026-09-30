@@ -1,8 +1,10 @@
 package com.example.smartpantrymanager.db;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.example.smartpantrymanager.model.Recipe;
 
@@ -21,4 +23,10 @@ public interface RecipeDao {
 
     @Insert
     void insertAll(List<Recipe> recipes);
+
+    @Update
+    void update(Recipe recipe);
+
+    @Delete
+    void delete(Recipe recipe);
 }

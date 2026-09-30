@@ -1,11 +1,13 @@
 package com.example.smartpantrymanager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.example.smartpantrymanager.db.AppDatabase;
 import com.example.smartpantrymanager.model.Recipe;
@@ -16,6 +18,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
 
     private ImageView imgHero;
     private TextView txtName, txtIngredients, txtSteps, txtLoading;
+    private FloatingActionButton fabEditRecipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +30,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
         txtIngredients = findViewById(R.id.txtIngredients);
         txtSteps = findViewById(R.id.txtSteps);
         txtLoading = findViewById(R.id.txtLoadingDetails);
+        fabEditRecipe = findViewById(R.id.fabEditRecipe);
 
         // Map primary navigation controls
         Toolbar toolbar = findViewById(R.id.toolbarDetail);
@@ -44,6 +48,20 @@ public class RecipeDetailActivity extends AppCompatActivity {
         if (apiId != null && !apiId.isEmpty()) {
             loadRecipeFromApi(apiId);
         } else if (localId != -1) {
+            fabEditRecipe.setVisibility(View.VISIBLE);
+            fabEditRecipe.setOnClickListener(v -> {
+                AppDatabase db = AppDatabase.getInstance(this);
+                Recipe r = db.recipeDao().getById(localId);
+                if (r != null) {
+                    Intent intent = new Intent(RecipeDetailActivity.this, AddRecipeActivity.class);
+                    intent.putExtra("recipe_id", r.id);
+                    intent.putExtra("recipe_name", r.name);
+                    intent.putExtra("recipe_ingredients", r.ingredientsCsv);
+                    intent.putExtra("recipe_steps", r.steps);
+                    startActivity(intent);
+                    finish();
+                }
+            });
             loadRecipeFromLocal(localId);
         }
     }
