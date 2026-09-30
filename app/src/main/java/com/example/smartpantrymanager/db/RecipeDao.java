@@ -17,5 +17,8 @@ public interface RecipeDao {
     Recipe getById(int id);
 
     @Insert
+    void insert(Recipe recipe);
+
+    @Insert
     void insertAll(List<Recipe> recipes);
 }

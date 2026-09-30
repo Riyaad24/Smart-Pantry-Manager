@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_deep_slate">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bg_deep_slate"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbarAddRecipe"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="Add Custom Recipe"
+            app:titleTextColor="@color/text_high_contrast"
+            app:navigationIcon="?attr/homeAsUpIndicator"
+            app:navigationIconTint="@color/text_high_contrast" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="40dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create Custom Meal"
+                android:textAppearance="@style/AppHeadlineLarge" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Add your own recipe to unlock strict pantry matching"
+                android:textAppearance="@style/AppBodySmall"
+                android:textColor="@color/text_medium_contrast" />
+
+            <!-- Recipe Name -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layoutRecipeName"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                app:boxStrokeColor="@color/accent_indigo"
+                app:hintTextColor="@color/accent_indigo">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtRecipeName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Recipe Name"
+                    android:textColor="@color/text_high_contrast"
+                    android:inputType="textCapWords"
+                    android:maxLines="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Ingredients CSV -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layoutIngredients"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:boxStrokeColor="@color/accent_indigo"
+                app:hintTextColor="@color/accent_indigo">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtIngredients"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Ingredients (comma separated, e.g. egg, butter, salt)"
+                    android:textColor="@color/text_high_contrast"
+                    android:inputType="textMultiLine"
+                    android:minLines="2" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Steps -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/layoutSteps"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:boxStrokeColor="@color/accent_indigo"
+                app:hintTextColor="@color/accent_indigo">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edtSteps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Preparation Steps"
+                    android:textColor="@color/text_high_contrast"
+                    android:inputType="textMultiLine"
+                    android:minLines="3" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Save Button -->
+            <Button
+                android:id="@+id/btnSaveRecipe"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="32dp"
+                android:text="Save Custom Recipe"
+                android:backgroundTint="@color/accent_indigo"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

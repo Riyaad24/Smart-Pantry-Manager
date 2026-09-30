@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.example.smartpantrymanager.adapter.RecipeAdapter;
 import com.example.smartpantrymanager.db.AppDatabase;
@@ -56,12 +57,17 @@ public class SuggestedRecipesActivity extends AppCompatActivity {
         cardCategoryQuick = findViewById(R.id.cardCategoryQuick);
         cardCategoryDinner = findViewById(R.id.cardCategoryDinner);
         cardCategoryDessert = findViewById(R.id.cardCategoryDessert);
+        FloatingActionButton fabAddRecipe = findViewById(R.id.fabAddRecipe);
 
         BottomNavigationView bottomNav = findViewById(R.id.bottomNav);
         db = AppDatabase.getInstance(this);
 
         recyclerReadyToCook.setLayoutManager(new LinearLayoutManager(this));
         recyclerSuggested.setLayoutManager(new LinearLayoutManager(this));
+
+        fabAddRecipe.setOnClickListener(v -> {
+            startActivity(new Intent(SuggestedRecipesActivity.this, AddRecipeActivity.class));
+        });
 
         bottomNav.setSelectedItemId(R.id.nav_suggested);
         bottomNav.setOnItemSelectedListener(item -> {
